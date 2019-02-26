@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GraphQL.Authorization
 {
@@ -39,10 +41,21 @@ namespace GraphQL.Authorization
             return this;
         }
 
+        public AuthorizationPolicyBuilder RequireAssertion(Action<AuthorizationContext> assertAction)
+        {
+            return AddRequirement(new AssertionRequirement(assertAction));
+        }
+
+        public AuthorizationPolicyBuilder RequireAssertion(Func<AuthorizationContext, Task> assertTask)
+        {
+            return AddRequirement(new AssertionRequirement(assertTask));
+        }
+
         public AuthorizationPolicyBuilder AddRequirement(IAuthorizationRequirement requirement)
         {
             _requirements.Add(requirement);
             return this;
         }
+
     }
 }
